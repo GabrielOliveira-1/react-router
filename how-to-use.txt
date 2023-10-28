@@ -1,0 +1,11 @@
+This project comprises two main components:
+
+A React.js application, representing the frontend single-page application (SPA).
+A simulated backend API intended for communication with the React application to send and retrieve data.
+To initiate both components, execute "npm install" in the respective project folders.
+
+To start the backend API server, use "npm start" within the "backend-api" folder. Simultaneously, launch the React app's development server using "npm start" within the "react-frontend" folder.
+
+Both backend and frontend servers must be operational to ensure the proper functionality of the projects.
+
+The dummy backend API doesn't rely on an external database. Instead, it stores dummy data in an "events.json" file within its project folder.
