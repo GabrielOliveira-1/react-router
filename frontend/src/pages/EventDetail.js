@@ -1,16 +1,16 @@
+import { Suspense } from "react";
 import {
+  useRouteLoaderData,
   json,
   redirect,
-  useRouteLoaderData,
   defer,
   Await,
 } from "react-router-dom";
 
 import EventItem from "../components/EventItem";
-import EventList from "../components/EventsList";
-import { Suspense } from "react";
+import EventsList from "../components/EventsList";
 
-const EventDetailPage = () => {
+function EventDetailPage() {
   const { event, events } = useRouteLoaderData("event-detail");
 
   return (
@@ -22,12 +22,12 @@ const EventDetailPage = () => {
       </Suspense>
       <Suspense fallback={<p style={{ textAlign: "center" }}>Loading...</p>}>
         <Await resolve={events}>
-          {(loadedEvents) => <EventList events={loadedEvents} />}
+          {(loadedEvents) => <EventsList events={loadedEvents} />}
         </Await>
       </Suspense>
     </>
   );
-};
+}
 
 export default EventDetailPage;
 
@@ -37,11 +37,13 @@ async function loadEvent(id) {
   if (!response.ok) {
     throw json(
       { message: "Could not fetch details for selected event." },
-      { status: 500 }
+      {
+        status: 500,
+      }
     );
   } else {
     const resData = await response.json();
-    return resData.events;
+    return resData.event;
   }
 }
 
@@ -49,11 +51,11 @@ async function loadEvents() {
   const response = await fetch("http://localhost:8080/events");
 
   if (!response.ok) {
-    // return { isError: true, message: "Could not fetch events." };
-    // throw new Response(JSON.stringify({ message: "Could not fetch events." }), {
+    // return { isError: true, message: 'Could not fetch events.' };
+    // throw new Response(JSON.stringify({ message: 'Could not fetch events.' }), {
     //   status: 500,
     // });
-    return json(
+    throw json(
       { message: "Could not fetch events." },
       {
         status: 500,
@@ -72,20 +74,9 @@ export async function loader({ request, params }) {
     event: await loadEvent(id),
     events: loadEvents(),
   });
-
-  // const response = await fetch("http://localhost:8080/events/" + id);
-
-  // if (!response.ok) {
-  //   throw json(
-  //     { message: "Could not fetch details for selected event." },
-  //     { status: 500 }
-  //   );
-  // } else {
-  //   return response;
-  // }
 }
 
-export async function action(params, request) {
+export async function action({ params, request }) {
   const eventId = params.eventId;
   const response = await fetch("http://localhost:8080/events/" + eventId, {
     method: request.method,

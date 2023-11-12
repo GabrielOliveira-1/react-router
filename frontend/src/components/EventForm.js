@@ -13,6 +13,7 @@ function EventForm({ method, event }) {
   const data = useActionData();
   const navigate = useNavigate();
   const navigation = useNavigation();
+
   const isSubmitting = navigation.state === "submitting";
 
   function cancelHandler() {
@@ -69,7 +70,7 @@ function EventForm({ method, event }) {
         />
       </p>
       <div className={classes.actions}>
-        <button type="button" onClick={cancelHandler}>
+        <button type="button" onClick={cancelHandler} disabled={isSubmitting}>
           Cancel
         </button>
         <button disabled={isSubmitting}>
@@ -82,9 +83,8 @@ function EventForm({ method, event }) {
 
 export default EventForm;
 
-export async function action(request, params) {
+export async function action({ request, params }) {
   const method = request.method;
-  console.log(request);
   const data = await request.formData();
 
   const eventData = {
